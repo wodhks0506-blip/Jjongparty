@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>2025 JJong 파티</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #ff00cc, #333399);
+      color: white;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      text-align: center;
+      padding: 50px;
+      user-select: none;
+    }
+    h1 {
+      font-size: 4rem;
+      text-shadow: 0 0 10px #ff66cc, 0 0 20px #ff66cc;
+      animation: glow 2s ease-in-out infinite alternate;
+      margin-bottom: 0;
+    }
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 10px #ff66cc, 0 0 20px #ff66cc;
+      }
+      to {
+        text-shadow: 0 0 20px #ff99ff, 0 0 30px #ff99ff;
+      }
+    }
+    p {
+      font-size: 1.5rem;
+      margin-top: 0;
+      margin-bottom: 30px;
+      font-weight: bold;
+    }
+    button {
+      background-color: #ff66cc;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      color: white;
+      cursor: pointer;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ff66cc;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #ff99ff;
+    }
+    #party-area {
+      margin-top: 50px;
+      font-size: 2rem;
+      min-height: 100px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎉 2025 JJong 파티 🎉</h1>
+  <p>언제나 즐겁고 행복 넘치는 우리만의 파티!</p>
+  <button onclick="startParty()">파티 시작!</button>
+  <div id="party-area"></div>
+
+  <script>
+    function startParty() {
+      const partyArea = document.getElementById('party-area');
+      partyArea.innerHTML = '';
+      const emojis = ['🎈', '🎉', '🥳', '🕺', '💃', '🍕', '🍺', '🎵', '🎤'];
+      
+      // 30개 랜덤 파티 이모지 팡팡 터트리기
+      for (let i = 0; i < 30; i++) {
+        const span = document.createElement('span');
+        span.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        span.style.position = 'absolute';
+        span.style.fontSize = (20 + Math.random() * 40) + 'px';
+        span.style.left = Math.random() * window.innerWidth + 'px';
+        span.style.top = Math.random() * window.innerHeight + 'px';
+        span.style.userSelect = 'none';
+        partyArea.appendChild(span);
+      }
+    }
+  </script>
+</body>
+</html>
