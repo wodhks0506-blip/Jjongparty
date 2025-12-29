@@ -13,7 +13,7 @@
       padding: 0;
       margin: 0;
       min-height: 100vh;
-      overflow: hidden; /* 스크롤바 절대 금지 */
+      overflow: hidden; 
       position: relative;
     }
     h1 {
@@ -21,131 +21,76 @@
       text-shadow: 0 0 10px #ff66cc, 0 0 20px #ff66cc;
       animation: glow 2s ease-in-out infinite alternate;
       margin-top: 50px;
-      margin-bottom: 0;
       position: relative;
       z-index: 20;
-      pointer-events: none;
     }
-    @keyframes glow {
-      from { text-shadow: 0 0 10px #ff66cc, 0 0 20px #ff66cc; }
-      to { text-shadow: 0 0 20px #ff99ff, 0 0 30px #ff99ff; }
-    }
-    p {
-      font-size: 1.5rem;
-      margin-top: 10px;
-      margin-bottom: 30px;
-      font-weight: bold;
-      position: relative;
-      z-index: 20;
-      pointer-events: none;
-    }
-    #btn-container {
-      position: relative;
-      z-index: 30;
-      margin-top: 20px;
-    }
-    button {
-      background-color: #ff66cc;
-      border: none;
-      padding: 15px 30px;
-      font-size: 1.2rem;
-      color: white;
-      cursor: pointer;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #ff66cc;
-      transition: background-color 0.3s, transform 0.2s;
-    }
-    button:hover {
-      background-color: #ff99ff;
-      transform: scale(1.1);
-    }
-    #party-area {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 10;
-    }
-    .meet-up-msg {
-      font-size: 3rem;
-      color: #fff;
-      font-weight: bold;
-      margin-top: 30px;
-      text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-      animation: bounce 1s infinite;
-      position: relative;
-      z-index: 20;
-      pointer-events: none;
-    }
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
-    }
+    /* 이모지 스타일 수정 */
     .emoji {
       position: absolute;
+      left: 0; /* 중요: transform이 (0,0) 기준으로 시작하게 함 */
+      top: 0;
+      display: inline-block;
       user-select: none;
       will-change: transform;
+      z-index: 10;
     }
+    #btn-container { position: relative; z-index: 30; margin-top: 20px; }
+    button {
+      background-color: #ff66cc; border: none; padding: 15px 30px;
+      font-size: 1.2rem; color: white; cursor: pointer; border-radius: 10px;
+      box-shadow: 0 0 10px #ff66cc; transition: transform 0.2s;
+    }
+    .meet-up-msg {
+      font-size: 3rem; color: #fff; font-weight: bold; margin-top: 30px;
+      animation: bounce 1s infinite; position: relative; z-index: 20;
+    }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
   </style>
 </head>
 <body>
   <h1>🎉 2025 JJong 파티 🎉</h1>
   <p>언제나 즐겁고 행복 넘치는 우리만의 파티!</p>
-  
-  <div id="btn-container">
-    <button onclick="startParty()">파티 시작!</button>
-  </div>
-  
+  <div id="btn-container"><button onclick="startParty()">파티 시작!</button></div>
   <div id="party-area"></div>
 
   <script>
-    // 이모지들의 정보를 담을 배열
     const particles = [];
 
     function startParty() {
-      // 1. 버튼 숨기기
-      const btnContainer = document.getElementById('btn-container');
-      btnContainer.style.display = 'none';
-
-      // 2. 메시지 추가
+      document.getElementById('btn-container').style.display = 'none';
       const msg = document.createElement('div');
       msg.className = 'meet-up-msg';
       msg.innerHTML = '✨ 12월 31일에 만나요! ✨';
-      
-      // 메시지를 버튼이 있던 자리 근처(h1, p 밑)에 추가
       document.body.insertBefore(msg, document.getElementById('party-area'));
 
       const partyArea = document.getElementById('party-area');
       const emojis = ['🎈', '🎉', '🥳', '🕺', '💃', '🍕', '🍺', '🎵', '🎤', '✨', '🎁'];
       
-      // 3. 이모지 생성 (50개) 및 초기화
-      for (let i = 0; i < 50; i++) {
+      // 화면 전체 너비와 높이를 미리 가져옴
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      for (let i = 0; i < 60; i++) {
         const el = document.createElement('span');
         el.className = 'emoji';
         el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
         
-        // 크기 랜덤
         const size = 30 + Math.random() * 40; 
         el.style.fontSize = size + 'px';
-        
         partyArea.appendChild(el);
 
-        // 이모지 물리 속성 설정
         particles.push({
           el: el,
-          x: Math.random() * (window.innerWidth - size),
-          y: Math.random() * (window.innerHeight - size),
-          vx: (Math.random() - 0.5) * 10, // X축 속도
-          vy: (Math.random() - 0.5) * 10, // Y축 속도
+          // 초기 위치를 화면 전체 범위에서 랜덤하게 설정
+          x: Math.random() * (width - size),
+          y: Math.random() * (height - size),
+          vx: (Math.random() - 0.5) * 8, 
+          vy: (Math.random() - 0.5) * 8,
           size: size,
           rotation: Math.random() * 360,
-          vRotation: (Math.random() - 0.5) * 5 // 회전 속도
+          vRotation: (Math.random() - 0.5) * 4
         });
       }
-
-      // 애니메이션 루프 시작
       animate();
     }
 
@@ -154,31 +99,30 @@
       const height = window.innerHeight;
 
       particles.forEach(p => {
-        // 위치 업데이트
         p.x += p.vx;
         p.y += p.vy;
         p.rotation += p.vRotation;
 
-        // 벽 튕기기 로직 (Ping-Pong)
-        // 좌우 벽
-        if (p.x <= 0 || p.x + p.size >= width) {
-          p.vx = -p.vx;
-          if (p.x <= 0) p.x = 0;
-          if (p.x + p.size >= width) p.x = width - p.size;
+        // 벽 충돌 감지 및 반전
+        if (p.x <= 0) {
+          p.x = 0;
+          p.vx *= -1;
+        } else if (p.x + p.size >= width) {
+          p.x = width - p.size;
+          p.vx *= -1;
         }
 
-        // 상하 벽
-        if (p.y <= 0 || p.y + p.size >= height) {
-          p.vy = -p.vy;
-          if (p.y <= 0) p.y = 0;
-          if (p.y + p.size >= height) p.y = height - p.size;
+        if (p.y <= 0) {
+          p.y = 0;
+          p.vy *= -1;
+        } else if (p.y + p.size >= height) {
+          p.y = height - p.size;
+          p.vy *= -1;
         }
 
-        // 화면에 그리기
-        p.el.style.transform = `translate(${p.x}px, ${p.y}px) rotate(${p.rotation}deg)`;
+        p.el.style.transform = `translate3d(${p.x}px, ${p.y}px, 0) rotate(${p.rotation}deg)`;
       });
 
-      // 무한 반복
       requestAnimationFrame(animate);
     }
   </script>
