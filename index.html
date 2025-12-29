@@ -10,20 +10,21 @@
       color: white;
       font-family: 'Comic Sans MS', cursive, sans-serif;
       text-align: center;
-      padding: 50px;
-      user-select: none;
+      padding: 0;
       margin: 0;
       min-height: 100vh;
-      overflow: hidden; /* 이모지가 화면 밖으로 나가도 스크롤 방지 */
-      position: relative; /* 이모지 위치 기준 */
+      overflow: hidden; /* 스크롤바 절대 금지 */
+      position: relative;
     }
     h1 {
       font-size: 4rem;
       text-shadow: 0 0 10px #ff66cc, 0 0 20px #ff66cc;
       animation: glow 2s ease-in-out infinite alternate;
+      margin-top: 50px;
       margin-bottom: 0;
       position: relative;
       z-index: 20;
+      pointer-events: none; /* 글자가 클릭 방해 안 하게 */
     }
     @keyframes glow {
       from { text-shadow: 0 0 10px #ff66cc, 0 0 20px #ff66cc; }
@@ -36,6 +37,7 @@
       font-weight: bold;
       position: relative;
       z-index: 20;
+      pointer-events: none;
     }
     button {
       background-color: #ff66cc;
@@ -48,7 +50,8 @@
       box-shadow: 0 0 10px #ff66cc;
       transition: background-color 0.3s, transform 0.2s;
       position: relative;
-      z-index: 30; /* 버튼이 가장 앞에 보이게 */
+      z-index: 30;
+      margin-top: 20px;
     }
     button:hover {
       background-color: #ff99ff;
@@ -60,93 +63,51 @@
       left: 0;
       width: 100%;
       height: 100%;
-      pointer-events: none; /* 이모지가 클릭 이벤트를 방해하지 않도록 */
+      pointer-events: none;
       z-index: 10;
     }
-    /* 새로 추가된 메시지 스타일 */
     .meet-up-msg {
       font-size: 3rem;
       color: #fff;
       font-weight: bold;
-      margin-top: 50px;
+      margin-top: 30px;
       text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
       animation: bounce 1s infinite;
       position: relative;
       z-index: 20;
+      pointer-events: none;
     }
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-20px); }
     }
-    /* 이모지 스타일 및 애니메이션 */
     .emoji {
       position: absolute;
       user-select: none;
-      pointer-events: none;
-    }
-    @keyframes float {
-      0% {
-        transform: translate(0, 0) rotate(0deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translate(var(--tx), var(--ty)) rotate(var(--r));
-        opacity: 0;
-      }
+      will-change: transform; /* 성능 최적화 */
     }
   </style>
 </head>
 <body>
   <h1>🎉 2025 JJong 파티 🎉</h1>
-  <button onclick="startParty(this)">파티 시작!</button>
+  
+  <div id="btn-container">
+    <button onclick="startParty()">파티 시작!</button>
+  </div>
+  
   <div id="party-area"></div>
 
   <script>
-    function startParty(button) {
-      // 1. 버튼 숨기기
-      button.style.display = 'none';
+    // 이모지들의 정보를 담을 배열
+    const particles = [];
+    let animationId;
 
-      const partyArea = document.getElementById('party-area');
-      partyArea.innerHTML = '';
-      
-      // 약속 메시지 추가
+    function startParty() {
+      // 1. 버튼 숨기기
+      const btnContainer = document.getElementById('btn-container');
+      btnContainer.style.display = 'none';
+
+      // 2. 메시지 추가
       const msg = document.createElement('div');
       msg.className = 'meet-up-msg';
-      msg.innerHTML = '✨ 2025년 12월 31일에 만나요! ✨';
-      // 메시지는 body에 직접 추가하여 중앙에 위치시킴
-      document.body.appendChild(msg);
-
-      const emojis = ['🎈', '🎉', '🥳', '🕺', '💃', '🍕', '🍺', '🎵', '🎤', '✨', '🎁'];
-      
-      // 50개 랜덤 파티 이모지 팡팡 터트리기
-      for (let i = 0; i < 50; i++) {
-        const span = document.createElement('span');
-        span.className = 'emoji';
-        span.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-        
-        // 초기 위치를 화면 중앙 부근으로 설정
-        const startX = 50 + (Math.random() - 0.5) * 20; // 40% ~ 60%
-        const startY = 50 + (Math.random() - 0.5) * 20; // 40% ~ 60%
-        span.style.left = startX + 'vw';
-        span.style.top = startY + 'vh';
-        span.style.fontSize = (20 + Math.random() * 40) + 'px';
-
-        // 랜덤한 목적지 및 회전 각도 설정 (CSS 변수 사용)
-        const tx = (Math.random() - 0.5) * 200 + 'vw'; // -100vw ~ 100vw 이동
-        const ty = (Math.random() - 0.5) * 200 + 'vh'; // -100vh ~ 100vh 이동
-        const r = (Math.random() - 0.5) * 720 + 'deg'; // -360deg ~ 360deg 회전
-        span.style.setProperty('--tx', tx);
-        span.style.setProperty('--ty', ty);
-        span.style.setProperty('--r', r);
-
-        // 랜덤한 애니메이션 지속 시간 및 딜레이 설정
-        const duration = 2 + Math.random() * 3 + 's'; // 2~5초
-        const delay = Math.random() * 0.5 + 's'; // 0~0.5초
-        span.style.animation = `float ${duration} ease-out ${delay} forwards`;
-
-        partyArea.appendChild(span);
-      }
-    }
-  </script>
-</body>
-</html>
+      msg.innerHTML = '✨ 12월 31일에 만나요! ✨';
